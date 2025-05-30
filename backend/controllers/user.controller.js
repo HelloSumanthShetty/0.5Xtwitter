@@ -1,7 +1,12 @@
 
 const User = require("../models/user.model")
 const notifies = require("../models/notification.model")
+const bcrypt=require("bcrypt")
+const cloudinary=require("cloudinary")
+const validator=require("validator")
+const jwt = require("jsonwebtoken")
 
+require("dotenv").config()
 
 const getuserprofile = async (req, res) => {
     try {
@@ -106,32 +111,125 @@ const suggestuser = async (req, res) => {
   }
   const updateuser=async(req,res)=>{
     try {
+      const updates = {};
         const user=req.user.userid
-        const {fullname,currentpassword,newpassword,conformedpassword,name,email,bio,link }=req.body
+        const {fullname,currentpassword,newpassword,confirmedpassword,name,email,bio,link }=req.body
         let {profileImg,coverImg}=req.body
-
+      
         if(!user){
             return res.status(400).json("user is missing")
         }
-        if(!currentpassword ||!newpassword||!conformedpassword){
+        
+          currentuser=await User.findById(user)
+          console.log(currentuser)
+        if(currentpassword){
+            
+        if(!currentpassword ||!newpassword||!confirmedpassword){
              return res.status(400).json("password is missing")
         }
-  if(newpassword!=conformedpassword){
+    
+  if(newpassword!=confirmedpassword){
     return res.status(400).json("Wrong user input")
   }
-          const currentuser=await User.findById(user)
+          currentuser=await User.findById(user)
+          console.log(currentuser)
         if(!currentuser){
-             res.status(404).json("User not found")
+           return  res.status(404).json("User not found")
         }
+       if(newpassword.length<8){
+            return res.status(400).json("minimum lenght of 8 character is need")
+        }
+        const compare= await bcrypt.compare(currentpassword,currentuser.password)
+        if(!compare){
+            return res.status(401).json("Wrong password try again")
+        }
+        if(currentpassword===newpassword){
+            return res.status(400).json("you can't add same password for current and new password")
+        }
+        const gensalt=9
+     updates.password= await bcrypt.hash(newpassword,gensalt)
+    }
+        if(profileImg){
+                if(currentuser.profileImg){
+                    await currentuser.profileImg.cloudinary.uploader.destroy(split("/").pop().split(".")[0])
+                }
+        const proups=await cloudinary.uploader.upload(profileImg)
+        profileImg=proups.secure_url
+        }
+        if(coverImg){
+            if(currentuser.coverimg){
+                await currentuser.coverimg.cloudinary.uploader.destroy(split('/').pop().split('.')[0])
+            }
+        const covups=await cloudinary.uploader.upload(coverImg)
+        coverImg=covups.secure_url
+        }
+ 
+        // currentuser.name=name||currentuser.name
+        // currentuser.email=email||currentuser.email
+        // currentuser.Fullname=fullname||currentuser.Fullname
+        // currentuser.link=link||currentuser.link
+        // currentuser.bio= bio||currentuser.bio
+        // currentuser.password=newpass||currentuser.password
+        // currentuser.profileImg= profileImg||currentuser.profileImg
+        // currentuser.coverimg= coverImg||currentuser.coverimg
 
-        const compare=
-        res.status(200).json()
+        // currentuser.save()
+        // currentuser.password=undefined
+        
+
+
+if(name && name!==currentuser.name){
+    const existname=await User.findOne({name})
+    if(existname){
+        return res.status(409).json("Name is already taken boii")
+    }
+    updates.name=name
+}
+
+if(email && email!==currentuser.email.toString()){
+    const existemail=await User.findOne({email})
+    if(existemail){
+        return res.status(409).json("email is already taken boii")
+    }
+    if(!validator.isEmail(email)){
+        return res.status(400).json("Email format is wrong")
+     }
+    updates.email=email
+}
+
+if(fullname && fullname!==currentuser.Fullname){
+    const existfullname=await User.findOne({fullname})
+    if(existfullname){
+        return res.status(409).json("fullname is already taken boii")
+    }
+    updates.Fullname=fullname
+}
+if (email) updates.email = email;
+if (fullname) updates.Fullname = fullname;
+if (link) updates.link = link;
+if (bio) updates.bio = bio;
+if (profileImg) updates.profileImg = profileImg;
+if (coverImg) updates.coverimg = coverImg;
+
+const updateduser=await User.findByIdAndUpdate(user,updates,{
+    runValidators:true,
+    new: true
+})
+  updateduser.password=undefined
+  const tokens=jwt.sign({useremail:updates.email,userid:user,userfullname:updates.Fullname,username:updates.name},process.env.SECERT,{expiresIn:"2h"})
+  res.cookie("tokens",tokens,{
+    HttpsOnly:true,
+    secure:process.env.NODE_ENV==="production",
+    Samesite:"Lax",
+    maxAge:7200000
+  })
+        res.status(200).json(updateduser)
     } catch (error) {
         console.error(error)
         res.status(500).json(error.message+": internal server issue")
     }
 
-  }
+  } 
 module.exports = { 
     getuserprofile,
     followlogic,

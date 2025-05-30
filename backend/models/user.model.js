@@ -27,13 +27,13 @@ const UserSchema = new mongoose.Schema({
     },
     follower: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+        ref: "Users",
         default: []
 
     }],
     following: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+        ref: "Users",
         default: []
 
     }],
@@ -48,8 +48,17 @@ const UserSchema = new mongoose.Schema({
     coverimg: {
         type: String,
         default: ""
-    }
+    },
+    link:{
+        type: String,
+        default: ""
+    },
+   likedpost:[{
+   type:mongoose.Schema.Types.ObjectId
+   ,ref:"post",
+   default:[]
+   }],
 
 }, {timestamps: true })
 
-module.exports = mongoose.model("Users", UserSchema)
+module.exports = mongoose.model("Users", UserSchema) 
