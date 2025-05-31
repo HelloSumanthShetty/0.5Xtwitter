@@ -42,10 +42,18 @@ const followlogic = async (req, res) => {
 
         const isfollowing = currentuser.following.includes(finduser._id)
         console.log("check" + isfollowing)
-
+  const findnoti = await notifies.findOne({  from:currentuser._id,
+                    to:finduser._id,
+                    type:"follow" })
+                       console.log("check" + findnoti)
         if (isfollowing) {
+
             await User.findByIdAndUpdate(finduser._id, { $pull: { follower: currentuser._id } })
             await User.findByIdAndUpdate(currentuser._id, { $pull: { following: finduser._id } })
+            if(findnoti){
+                await notifies.findByIdAndDelete(findnoti._id)
+            }
+
             res.status(200).json("unfollowed the user")
 
 
@@ -54,9 +62,7 @@ const followlogic = async (req, res) => {
             await User.findByIdAndUpdate(finduser._id, { $push: { follower: currentuser._id } })
             await User.findByIdAndUpdate(currentuser._id, { $push: { following: finduser._id } })
 
-            const findnoti = await notifies.findOne({ from: currentuser._id })
-
-            if (!findnoti) {
+          
 
                 const newnotify = new notifies({
                     from: currentuser._id,
@@ -65,7 +71,7 @@ const followlogic = async (req, res) => {
 
                 })
                 await newnotify.save()
-            }
+       
 
             res.status(200).json("followed the user")
 

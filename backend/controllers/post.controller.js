@@ -102,9 +102,16 @@ const likeunlike = async (req, res) => {
         }
         const liked = targetpost.like.includes(userid)
         console.log(liked)
+        const notifyexit=await notifies.findOne({
+            from:userid,
+            to:targetpost.user,
+            type:"like"
+        })
+
         if (!liked) {
-            await post.findByIdAndUpdate(targetpost.id, { $push: { like: userid } })
-            await user.findByIdAndUpdate(userid,{$push:{likedpost:targetpost.id}})
+            await post.findByIdAndUpdate(targetpost._id, { $push: { like: userid } })
+            await user.findByIdAndUpdate(userid,{$push:{likedpost:targetpost._id}})
+        
             res.json("liked")
             
             const notify = new notifies(
@@ -118,7 +125,10 @@ const likeunlike = async (req, res) => {
         }
         else {
             await post.findByIdAndUpdate(targetpost._id, { $pull: { like:userid } })
-            await user.findByIdAndUpdate(userid,{$pull:{likedpost:targetpost.id}})
+            await user.findByIdAndUpdate(userid,{$pull:{likedpost:targetpost._id}})
+        if(notifyexit){
+            await notifies.findByIdAndDelete(notifyexit._id)
+        }
             res.json("unliked")
         }
 

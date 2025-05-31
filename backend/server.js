@@ -5,6 +5,7 @@ const cloudinary=require("cloudinary")
 const authrouter=require("./routes/auth.route")
 const userrouter=require("./routes/user.route")
 const postrouter=require("./routes/post.route")
+const notify=require("./routes/notification.route")
 const cookieParser = require("cookie-parser")
 const app=express()
 cloudinary.config({
@@ -20,6 +21,7 @@ app.use(cookieParser())
 app.use('/api',authrouter)
 app.use('/api/user',userrouter)
 app.use('/api/post',postrouter)
+app.use("/api/notification",notify)
 const port =process.env.PORT        
 
 const start=async ()=>{
