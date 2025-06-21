@@ -37,5 +37,5 @@ A minimal Twitter clone built with the MERN stack, using modern tools like React
 
 ```bash
 cd backend
-yarn
-yarn start
+npm install
+npm run dev
