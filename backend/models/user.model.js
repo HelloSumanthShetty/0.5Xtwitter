@@ -16,25 +16,25 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         minlength: [8, "password must have a min-length of 8"],
-        required: [true, "please enter the password"],
+        required: [true, "please enter the password"], 
     },
-    email: {
+    email: { 
     required:[true,"please enter the email"],
         type: String,
         unique: true
 
-    },
+    }, 
     follower: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users",
         default: []
 
-    }],
+    }], 
     following: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Users",
+        ref: "Users",   
         default: []
-
+ 
     }],
     bio: {
         type: String,
@@ -42,7 +42,7 @@ const UserSchema = new mongoose.Schema({
     },
     profileImg: {
         type: String,
-        default: ""
+        default: "" 
     },
     coverimg: {
         type: String,

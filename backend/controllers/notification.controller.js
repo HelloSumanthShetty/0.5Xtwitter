@@ -4,8 +4,8 @@ const getnotify=async(req,res)=>{
     try {
 		const userId = req.user.userid;
 
-		const notifications = await notifies.find({ to: userId }).populate({
-			path: "from",
+		const notifications = await notifies.find({ to: userId }).sort({ createdAt: -1 }).populate({
+			path: "from", 
 			select: "name profileImg",
 		});
 

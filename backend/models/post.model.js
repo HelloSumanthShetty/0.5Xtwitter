@@ -9,7 +9,7 @@ const postschema=new mongoose.Schema({
    type:String
    },
    img:{
-    type:String
+    type:String,
    },
    like:[{
     type:mongoose.Schema.Types.ObjectId

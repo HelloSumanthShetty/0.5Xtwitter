@@ -5,7 +5,7 @@ const verifytokens=require("../middlewares/auth")
 
 router.route('/profile/update').post(verifytokens,updateuser)
 router.route('/profile/sugguser').get(verifytokens,suggestuser)
-router.route('/profile/:email').get(verifytokens,getuserprofile)
+router.route('/profile/:username').get(verifytokens,getuserprofile)
 router.route('/profile/:id').post(verifytokens,followlogic)
 
-module.exports=router
+module.exports=router 

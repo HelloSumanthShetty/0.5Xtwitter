@@ -1,19 +1,40 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import useUpdateUserProfile from "../../components/hooks/useUpdateUserProfil";
+import { useQuery } from "@tanstack/react-query";
 const EditProfileModal = () => {
+	const { data: authUser } = useQuery({ queryKey: ["authUser"] })
 	const [formData, setFormData] = useState({
-		fullName: "",
-		username: "",
+		Fullname: "",
+		name: "",
 		email: "",
 		bio: "",
 		link: "",
-		newPassword: "",
-		currentPassword: "",
+		confirmedpassword: "",
+		currentpassword: "",
+		newpassword: ""
 	});
+
+	const { updateProfile, isUpdatingProfile } = useUpdateUserProfile();
 
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
+
+	useEffect(() => {
+		if (authUser) {
+			setFormData({
+				fullName: authUser.fullName,
+				username: authUser.username,
+				email: authUser.email,
+				bio: authUser.bio,
+				link: authUser.link,
+				confirmedpassword: "",
+				currentpassword: "",
+				newpassword: ""
+			});
+		}
+	}, [authUser]);
+
 
 	return (
 		<>
@@ -30,24 +51,24 @@ const EditProfileModal = () => {
 						className='flex flex-col gap-4'
 						onSubmit={(e) => {
 							e.preventDefault();
-							alert("Profile updated successfully");
+							updateProfile(formData);
 						}}
 					>
 						<div className='flex flex-wrap gap-2'>
 							<input
 								type='text'
 								placeholder='Full Name'
-								className='flex-1 input border border-gray-700 rounded p-2 input-md'
-								value={formData.fullName}
-								name='fullName'
+								className='flex-1 input border border-blue-400 rounded p-2 input-md'
+								value={formData.Fullname}
+								name='Fullname'
 								onChange={handleInputChange}
 							/>
 							<input
 								type='text'
-								placeholder='Username'
-								className='flex-1 input border border-gray-700 rounded p-2 input-md'
-								value={formData.username}
-								name='username'
+								placeholder='name'
+								className='flex-1 input border border-blue-400 rounded p-2 input-md'
+								value={formData.name}
+								name='name'
 								onChange={handleInputChange}
 							/>
 						</div>
@@ -55,14 +76,14 @@ const EditProfileModal = () => {
 							<input
 								type='email'
 								placeholder='Email'
-								className='flex-1 input border border-gray-700 rounded p-2 input-md'
+								className='flex-1 input border border-blue-400 rounded p-2 input-md'
 								value={formData.email}
 								name='email'
 								onChange={handleInputChange}
 							/>
 							<textarea
 								placeholder='Bio'
-								className='flex-1 input border border-gray-700 rounded p-2 input-md'
+								className='flex-1 input border border-blue-400 rounded p-2 input-md'
 								value={formData.bio}
 								name='bio'
 								onChange={handleInputChange}
@@ -72,29 +93,39 @@ const EditProfileModal = () => {
 							<input
 								type='password'
 								placeholder='Current Password'
-								className='flex-1 input border border-gray-700 rounded p-2 input-md'
-								value={formData.currentPassword}
-								name='currentPassword'
+								className='flex-1 input border border-blue-400 rounded p-2 input-md'
+								value={formData.currentpassword}
+								name='currentpassword'
 								onChange={handleInputChange}
 							/>
 							<input
 								type='password'
 								placeholder='New Password'
-								className='flex-1 input border border-gray-700 rounded p-2 input-md'
-								value={formData.newPassword}
-								name='newPassword'
+								className='flex-1 input border border-blue-400 rounded p-2 input-md'
+								value={formData.newpassword}
+								name='newpassword'
 								onChange={handleInputChange}
 							/>
+							<input
+								type='password'
+								placeholder='confirmed Password'
+								className='flex-1 input border border-blue-400 rounded p-2 input-md'
+								value={formData.confirmedpassword}
+								name='confirmedpassword'
+								onChange={handleInputChange}
+							/>
+
+
 						</div>
 						<input
 							type='text'
 							placeholder='Link'
-							className='flex-1 input border border-gray-700 rounded p-2 input-md'
+							className='flex-1 input border border-blue-400 rounded p-2 input-md'
 							value={formData.link}
 							name='link'
 							onChange={handleInputChange}
 						/>
-						<button className='btn btn-primary rounded-full btn-sm text-white'>Update</button>
+						<button className='btn btn-primary rounded-full btn-sm text-white'>{isUpdatingProfile ? "Updating..." : "Update"}</button>
 					</form>
 				</div>
 				<form method='dialog' className='modal-backdrop'>

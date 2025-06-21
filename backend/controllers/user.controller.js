@@ -10,15 +10,15 @@ require("dotenv").config()
 
 const getuserprofile = async (req, res) => {
     try {
-        const user = req.params.email
+        const user = req.params.username
         console.log(user)
-        const finduser = await User.findOne({ email: user }).select("-password")
+        const finduser = await User.findOne({ name: user }).select("-password")
         if (!finduser) {
             return res.status(400).json("user don't exist")
         }
         res.json(finduser)
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(500).json({error:error.message})
     }
 }
 
@@ -42,25 +42,25 @@ const followlogic = async (req, res) => {
 
         const isfollowing = currentuser.following.includes(finduser._id)
         console.log("check" + isfollowing)
-  const findnoti = await notifies.findOne({  from:currentuser._id,
+  const findnoti = await notifies.findOne({  from:currentuser?._id,
                     to:finduser._id,
                     type:"follow" })
                        console.log("check" + findnoti)
         if (isfollowing) {
 
-            await User.findByIdAndUpdate(finduser._id, { $pull: { follower: currentuser._id } })
-            await User.findByIdAndUpdate(currentuser._id, { $pull: { following: finduser._id } })
+            await User.findByIdAndUpdate(finduser._id, { $pull: { follower: currentuser?._id } })
+            await User.findByIdAndUpdate(currentuser._id, { $pull: { following: finduser?._id } })
             if(findnoti){
                 await notifies.findByIdAndDelete(findnoti._id)
             }
 
-            res.status(200).json("unfollowed the user")
+            res.status(200).json("unfollowed")
 
 
         }
         else {
-            await User.findByIdAndUpdate(finduser._id, { $push: { follower: currentuser._id } })
-            await User.findByIdAndUpdate(currentuser._id, { $push: { following: finduser._id } })
+            await User.findByIdAndUpdate(finduser._id, { $push: { follower: currentuser?._id } })
+            await User.findByIdAndUpdate(currentuser._id, { $push: { following: finduser?._id } })
 
           
 
@@ -73,12 +73,12 @@ const followlogic = async (req, res) => {
                 await newnotify.save()
        
 
-            res.status(200).json("followed the user")
+            res.status(200).json("followed")
 
         }
     } catch (error) {
         console.error(error)
-        res.status(500).json(error.message + "Internal server issue")
+        res.status(500).json({error:error.message + "Internal server issue"})
     }
 }
 
@@ -99,9 +99,9 @@ const suggestuser = async (req, res) => {
         { $sample: { size: 10 } }
         ])
 
-        const filtering = sugg.filter(i => !currentuser.following.includes(i._id))
+        const filtering = sugg.filter(i => !currentuser.following?.includes(i._id))
 
-        const newsugg = filtering.slice(0, 4)
+        const newsugg =  filtering.slice(0, 4)
     //    const suggestuser= newsugg.forEach(i => i.password = null)
      const newsuggs=newsugg.map(i=>{
         i.password=undefined
@@ -111,7 +111,7 @@ const suggestuser = async (req, res) => {
     
 } catch (error) {
         console.error(error)
-        res.status(500).json(error.message + ": internal server issue")
+        res.status(500).json({error:error.message + ": internal server issue"})
     }   
  
   }
@@ -119,7 +119,7 @@ const suggestuser = async (req, res) => {
     try {
       const updates = {};
         const user=req.user.userid
-        const {fullname,currentpassword,newpassword,confirmedpassword,name,email,bio,link }=req.body
+        const {Fullname,currentpassword,newpassword,confirmedpassword,name,email,bio,link }=req.body
         let {profileImg,coverImg}=req.body
       
         if(!user){
@@ -172,7 +172,7 @@ const suggestuser = async (req, res) => {
  
         // currentuser.name=name||currentuser.name
         // currentuser.email=email||currentuser.email
-        // currentuser.Fullname=fullname||currentuser.Fullname
+        // currentuser.Fullname=Fullname||currentuser.Fullname
         // currentuser.link=link||currentuser.link
         // currentuser.bio= bio||currentuser.bio
         // currentuser.password=newpass||currentuser.password
@@ -203,15 +203,15 @@ if(email && email!==currentuser.email.toString()){
     updates.email=email
 }
 
-if(fullname && fullname!==currentuser.Fullname){
-    const existfullname=await User.findOne({fullname})
-    if(existfullname){
-        return res.status(409).json("fullname is already taken boii")
+if(Fullname && Fullname!==currentuser.Fullname){
+    const existFullname=await User.findOne({Fullname})
+    if(existFullname){
+        return res.status(409).json("Fullname is already taken boii")
     }
-    updates.Fullname=fullname
+    updates.Fullname=Fullname
 }
 if (email) updates.email = email;
-if (fullname) updates.Fullname = fullname;
+if (Fullname) updates.Fullname = Fullname;
 if (link) updates.link = link;
 if (bio) updates.bio = bio;
 if (profileImg) updates.profileImg = profileImg;
@@ -222,7 +222,7 @@ const updateduser=await User.findByIdAndUpdate(user,updates,{
     new: true
 })
   updateduser.password=undefined
-  const tokens=jwt.sign({useremail:updates.email,userid:user,userfullname:updates.Fullname,username:updates.name},process.env.SECERT,{expiresIn:"2h"})
+  const tokens=jwt.sign({useremail:updates.email,userid:user,userFullname:updates.Fullname,username:updates.name},process.env.SECERT,{expiresIn:"2h"})
   res.cookie("tokens",tokens,{
     HttpsOnly:true,
     secure:process.env.NODE_ENV==="production",
@@ -232,7 +232,7 @@ const updateduser=await User.findByIdAndUpdate(user,updates,{
         res.status(200).json(updateduser)
     } catch (error) {
         console.error(error)
-        res.status(500).json(error.message+": internal server issue")
+        res.status(500).json({error:error.message+": internal server issue"})
     }
 
   } 

@@ -2,46 +2,83 @@ import { CiImageOn } from "react-icons/ci";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
+import toast from "react-hot-toast";
+import { useMutation,useQuery, useQueryClient } from "@tanstack/react-query";
 
 const CreatePost = () => {
 	const [text, setText] = useState("");
 	const [img, setImg] = useState(null);
-
+	const {data:authuser}=useQuery({queryKey:["authUser"]})	
+  const queryclient=useQueryClient()
 	const imgRef = useRef(null);
 
-	const isPending = false;
-	const isError = false;
+	// const isPending = false;
+	// const isError = false;
+ const {mutate:createPost,isError,isPending}=useMutation({
+	mutationFn:async({text,img})=>{
+		try {
+			const res=await fetch(`/api/post/`,{
+				method:"POST",
+				headers:{
+					"Content-Type":"application/json"
+				},
+				body:JSON.stringify({text,img})
+			})
+			const data=await res.json()
+         console.log(data)
+			if(!res.ok){
+				throw new Error(data.error||"internal server error")
+			}
 
+      return data
+
+		} catch (error) {
+			toast.error("internal server error")
+			console.error(error)
+			throw error
+ 		}
+	},
+	onSuccess:()=>{
+	setText("")
+	setImg(null)
+    toast.success("posted")
+	queryclient.invalidateQueries({queryKey:["Posts"]})
+	
+	}
+ })
 	const data = {
 		profileImg: "/avatars/boy1.png",
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		alert("Post created successfully");
+		createPost({text,img})
 	};
 
 	const handleImgChange = (e) => {
 		const file = e.target.files[0];
-		if (file) {
+		console.log(file)
+		 if (file) {
 			const reader = new FileReader();
-			reader.onload = () => {
+		 	console.log(reader)
+		 	reader.onload = () => {
 				setImg(reader.result);
+				
 			};
 			reader.readAsDataURL(file);
 		}
-	};
+	}
 
 	return (
 		<div className='flex p-4 items-start gap-4 border-b border-gray-700'>
-			<div className='avatar'>
+			<div className='avatar '>
 				<div className='w-8 rounded-full'>
-					<img src={data.profileImg || "/avatar-placeholder.png"} />
+					<img src={authuser.profileImg || "/avatar-placeholder.png"} />
 				</div>
 			</div>
 			<form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
 				<textarea
-					className='textarea w-full p-0 text-lg resize-none border-none focus:outline-none  border-gray-800'
+					className='textarea w-full focus:mt-6  p-0 text-lg resize-none border-none top-2 focus:outline-none  border-gray-800'
 					placeholder='What is happening?!'
 					value={text}
 					onChange={(e) => setText(e.target.value)}
@@ -49,7 +86,7 @@ const CreatePost = () => {
 				{img && (
 					<div className='relative w-72 mx-auto'>
 						<IoCloseSharp
-							className='absolute top-0 right-0 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer'
+							className='absolute top-0 right-1  z-10 text-white bg-gray-800 hover:scale-120 rounded-full w-5 h-5 cursor-pointer'
 							onClick={() => {
 								setImg(null);
 								imgRef.current.value = null;
@@ -62,13 +99,13 @@ const CreatePost = () => {
 				<div className='flex justify-between border-t py-2 border-t-gray-700'>
 					<div className='flex gap-1 items-center'>
 						<CiImageOn
-							className='fill-primary w-6 h-6 cursor-pointer'
+							className='text-blue-400 w-6 h-6 cursor-pointer'
 							onClick={() => imgRef.current.click()}
 						/>
-						<BsEmojiSmileFill className='fill-primary w-5 h-5 cursor-pointer' />
+						<BsEmojiSmileFill className=' w-5 h-5 text-blue-500  cursor-pointer' />
 					</div>
 					<input type='file' hidden ref={imgRef} accept="image/*" onChange={handleImgChange} />
-					<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
+					<button className='btn btn-primary bg-blue-700 shadow-md shadow-blue-600 rounded-full btn-sm text-white px-4'>
 						{isPending ? "Posting..." : "Post"}
 					</button>
 				</div>

@@ -1,14 +1,47 @@
 import { Link } from "react-router-dom";
 import RightPanelSkeleton from "../skeletons/RightPanelskeleton";
-import { USERS_FOR_RIGHT_PANEL } from "../../utils/db/dummy";
-
+// import ProfilePage from "../../pages/profile/Profilepage";
+// import dayjs from "dayjs";
+import LoadingSpinner from "./Loadingspinner";
+import { useQuery,useQueryClient } from "@tanstack/react-query";
+import hooks from "../hooks/hooks";
 const RightPanel = () => {
-	const isLoading = false;
+	
+	const {followlogic,isPending}=hooks()
+
+	const {data:user,isLoading,}=useQuery(
+	
+		{
+			queryKey:["sugg"],
+		queryFn:async()=>{
+			
+			try {
+				
+				const res=await fetch("/api/user/profile/sugguser",
+				{method:"GET"}
+			)
+			console.log(res)
+			const data=await res.json()
+			console.log(data)
+		if(!res.ok){
+			throw new Error(data.error||"internal server error")
+		}
+		// console.log(data)
+	 
+        return data
+
+			} catch (error) {
+				console.log(error||"internal server error")
+				throw error
+			}
+		}
+	}
+	)
 
 	return (
 		<div className='hidden lg:block my-4 mx-2'>
-			<div className='bg-[#16181C] p-4 rounded-md sticky top-2'>
-				<p className='font-bold'>Who to follow</p>
+			<div className='bg-zinc-800 p-4 rounded-md text-white sticky top-2'>
+				<p className='font-bold'>{user?.length!=0?"Who to follow":"NO USER AVAILABLE"}</p>
 				<div className='flex flex-col gap-4'>
 					{/* item */}
 					{isLoading && (
@@ -20,7 +53,7 @@ const RightPanel = () => {
 						</>
 					)}
 					{!isLoading &&
-						USERS_FOR_RIGHT_PANEL?.map((user) => (
+						user?.map((user) => (
 							<Link
 								to={`/profile/${user.name}`}
 								className='flex items-center justify-between gap-4'
@@ -42,9 +75,12 @@ const RightPanel = () => {
 								<div>
 									<button
 										className='btn bg-white text-black hover:bg-white hover:opacity-90 rounded-full btn-sm'
-										onClick={(e) => e.preventDefault()}
+										onClick={(e) => {
+											e.preventDefault()
+											followlogic(user)
+										}}
 									>
-										Follow
+										{isPending ? <LoadingSpinner size="sm"/> : "follow"}
 									</button>
 								</div>
 							</Link>

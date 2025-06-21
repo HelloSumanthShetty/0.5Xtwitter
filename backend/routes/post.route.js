@@ -6,7 +6,7 @@ const verifytoken = require("../middlewares/auth")
 router.route('/').post(verifytoken,createpost).get(verifytoken,getall)
 router.route('/:id').delete(verifytoken,deletepost)
 router.route("/comment/:id").post(verifytoken,comment)
-router.route("/follow").get(verifytoken,getfollowingposts)
+router.route("/following").get(verifytoken,getfollowingposts)
 router.route("/like/:id").post(verifytoken,likeunlike).get(verifytoken,getlikes)
 router.route("/user/:username").get(verifytoken,getuserposts)
-module.exports=router 
+module.exports=router    

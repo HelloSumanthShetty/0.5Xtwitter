@@ -2,34 +2,35 @@ const notifies = require("../models/notification.model")
 const postModel = require("../models/post.model")
 const post = require("../models/post.model")
 const user = require("../models/user.model")
-const cloudinary = require("cloudinary")
-const { getuserprofile } = require("./user.controller")
+const cloudinary = require("cloudinary").v2
+
 const createpost = async (req, res) => {
     try {
-        const { text, img } = req.body
+        let { text, img } = req.body
+        console.log(img)
         const userid = req.user.userid
         const userfind = await user.findById(userid)
         if (!userfind) {
             return res.status(404).status("missing user")
         }
-        if (!text && !img) {
-            return res.status(400).json("missing input please enter text or img")
+        if (!text) {
+            return res.status(400).json("missing input")
         }
 
         if (img) {
-            const newimg = cloudinary.Uploader.upload(img)
+            const newimg = await cloudinary.uploader.upload(img)
             img = newimg.secure_url
         }
 
         const createpost = await post.create({
-            user: userid,
+            user: userid, 
             text,
-            img,
+            img
         })
         res.status(201).json(createpost)
     } catch (error) {
         console.error(error)
-        res.status(500).json(error.message + ": internal server issue ")
+        res.status(500).json({error:error.message})
     }
 }
 
@@ -43,14 +44,16 @@ const deletepost = async (req, res) => {
         console.log({ lets: findpost })
 
         if (!findpost) {
-            return res.status(404).json("sorry the post is not found")
+            //return res.status(404).json({error:"sorry the post is not found"})
+           throw new Error("sorry the post is not found")
         }
         if (userid.toString() !== findpost.user.toString()) {
-            return res.status(403).json("sorry your are not autherized")
+          //  return res.status(403).json({error:"sorry your are not autherized"})
+             throw new Error("sorry your are not autherized")
         }
         if (findpost.img) {
-            const delimg = post.img.split("/").pop().split(".")[0]
-            await cloudinary.Uploader.delete(delimg)
+            const delimg = findpost.img.split("/").pop().split(".")[0]
+            await cloudinary.uploader.destroy(delimg)
         }
 
         const deletepost = await post.findByIdAndDelete(findpost)
@@ -85,7 +88,7 @@ const comment = async (req, res) => {
     }
     catch (error) {
         console.error(error)
-        res.status(500).json(error.message + ": internal server issue ")
+        res.status(500).json({error:error.message + ": internal server issue "})
     }
 }
 
@@ -102,30 +105,38 @@ const likeunlike = async (req, res) => {
         }
         const liked = targetpost.like.includes(userid)
         console.log(liked)
-        const notifyexit=await notifies.findOne({
-            from:userid,
-            to:targetpost.user,
-            type:"like"
-        })
+       
 
         if (!liked) {
             await post.findByIdAndUpdate(targetpost._id, { $push: { like: userid } })
             await user.findByIdAndUpdate(userid,{$push:{likedpost:targetpost._id}})
         
             res.json("liked")
-            
+            // console.log(targetpost.user)
+            // console.log(userid)
+            const sameuse=targetpost.user.toString()===userid
+            // console.log(sameuse)
+            if(!sameuse){
             const notify = new notifies(
                 {
                     from: userid,
                     to: targetpost.user,
                     type: "like"
                 }
+            
             )
             await notify.save()
+        }
+            
         }
         else {
             await post.findByIdAndUpdate(targetpost._id, { $pull: { like:userid } })
             await user.findByIdAndUpdate(userid,{$pull:{likedpost:targetpost._id}})
+             const notifyexit=await notifies.findOne({
+            from:userid,
+            to:targetpost.user,
+            type:"like"
+        })
         if(notifyexit){
             await notifies.findByIdAndDelete(notifyexit._id)
         }
@@ -159,29 +170,28 @@ const getlikes=async(req,res)=>{
         const userid=req.params.id
 
     const targetuser=await user.findById(userid)
-    if(!targetuser) return res.status(404).json("no user exist")
-        
-    const likes=await user.findOne(targetuser._id).select("likedpost").populate({
-        path:"likedpost",populate:{
-            path:"user",
-            select:"-password"
-        }
-    }).populate({
-        path:"likedpost",
-        populate:{
-            path:"Comment.user",
-            select:"-password"
-        }
-    })
+
+    if(!targetuser) return res.status(404).json({error:"no user exist"})
+        console.log(targetuser.likedpost)
+    const likes=await post.find({_id:{$in:targetuser.likedpost}}).sort({createdAt:-1}).populate({
+				path: "user",
+				select: "-password",
+			})
+			.populate({
+				path: "Comment.user",
+				select: "-password",
+			});
+
+    console.log(likes)
     res.json(likes)
     } catch (error) {
     console.error(error)
-        res.status(500).json(error.message + ": internal server issue ")
+        res.status(500).json({error:error.message + ": internal server issue "})
     }
 }
 const getfollowingposts = async (req, res) => {
 	try {
-		const userId = req.user.userid;
+		const userId = req.user.userid; 
 		const users = await user.findById(userId);
 		if (!users) return res.status(404).json( "User not found" );
 
@@ -211,7 +221,7 @@ const getuserposts = async (req, res) => {
 
 		const users = await user.findOne({name:username});
 		if (!users) return res.status(404).json( "User not found" );
-
+ 
 		const posts = await post.find({ user: users._id })
 			.sort({ createdAt: -1 })
 			.populate({
