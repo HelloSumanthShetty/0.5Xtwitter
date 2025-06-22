@@ -6,7 +6,7 @@ import { FaTrash } from "react-icons/fa";
 import { useState,useEffect, } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import LoadingSpinner from "./Loadingspinner";
+import LoadingSpinner from "./Loadingspinner.jsx";
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

@@ -1,16 +1,16 @@
 import { Route, Routes,Navigate,useNavigate } from "react-router-dom"
-import HomePage from "./pages/home/HomePage"
-import SignupPage from "./pages/auth/signup/SignupPage"
-import LoginPage from "./pages/auth/login/loginPage"
+import HomePage from "./pages/home/HomePage.jsx"
+import SignupPage from "./pages/auth/signup/SignupPage.jsx"
+import LoginPage from "./pages/auth/login/loginPage.jsx"
 import { useEffect } from "react"
-import NotificationPage from "./pages/notifications/Notificationpage"
-import ProfilePage from "./pages/profile/Profilepage"
-import MainLayout from "./components/layout/Mainlayout"
+import NotificationPage from "./pages/notifications/Notificationpage.jsx"
+import ProfilePage from "./pages/profile/Profilepage.jsx"
+import MainLayout from "./components/layout/Mainlayout.jsx"
 import Sidebar from "./components/common/Sidebar"
 import Rigthbar from './components/common/Rightbar'
 import { Toaster } from "react-hot-toast"
 import { useQuery, } from "@tanstack/react-query"
-import LoadingSpinner from "./components/common/Loadingspinner"
+import LoadingSpinner from "./components/common/Loadingspinner.jsx"
 
 function App() {
   

@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import RightPanelSkeleton from "../skeletons/RightPanelskeleton";
+import RightPanelSkeleton from "../skeletons/RightPanelskeleton.jsx";
 // import ProfilePage from "../../pages/profile/Profilepage";
 // import dayjs from "dayjs";
-import LoadingSpinner from "./Loadingspinner";
+import LoadingSpinner from "./Loadingspinner.jsx";
 import { useQuery,useQueryClient } from "@tanstack/react-query";
-import hooks from "../hooks/hooks";
+import hooks from "../hooks/hooks.jsx";
 const RightPanel = () => {
 	
 	const {followlogic,isPending}=hooks()

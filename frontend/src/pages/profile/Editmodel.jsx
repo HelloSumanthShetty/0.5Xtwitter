@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useUpdateUserProfile from "../../components/hooks/useUpdateUserProfil";
+import useUpdateUserProfile from "../../components/hooks/useUpdateUserProfil.jsx";
 import { useQuery } from "@tanstack/react-query";
 const EditProfileModal = () => {
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] })

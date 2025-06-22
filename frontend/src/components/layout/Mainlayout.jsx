@@ -1,5 +1,5 @@
-import Sidebar from "../common/Sidebar";
-import Rightbar from "../common/Rightbar";
+import Sidebar from "../common/Sidebar.jsx";
+import Rightbar from "../common/Rightbar.jsx";
 import { Outlet } from "react-router-dom";  
 const MainLayout = () => {
   return (

@@ -1,5 +1,5 @@
-import Post from "./post";
-import PostSkeleton from "../skeletons/PostSkeleton";
+import Post from "./post.jsx";
+import PostSkeleton from "../skeletons/Postskeleton.jsx";
 import ProfilePage from "../../pages/profile/Profilepage";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
