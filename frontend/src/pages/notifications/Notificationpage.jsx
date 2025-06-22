@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import LoadingSpinner from "../../components/commen/Loadingspinner";
+import LoadingSpinner from "../../components/common/Loadingspinner";
 import { useQueryClient,useQuery,useMutation } from "@tanstack/react-query";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";

@@ -6,11 +6,11 @@ import { useEffect } from "react"
 import NotificationPage from "./pages/notifications/Notificationpage"
 import ProfilePage from "./pages/profile/Profilepage"
 import MainLayout from "./components/layout/Mainlayout"
-import Sidebar from "./components/commen/Sidebar"
-import Rigthbar from './components/commen/Rightbar'
+import Sidebar from "./components/common/Sidebar"
+import Rigthbar from './components/common/Rightbar'
 import { Toaster } from "react-hot-toast"
 import { useQuery, } from "@tanstack/react-query"
-import LoadingSpinner from "./components/commen/Loadingspinner"
+import LoadingSpinner from "./components/common/Loadingspinner"
 
 function App() {
   

@@ -1,6 +1,6 @@
 import { useState,useEffect } from "react";
 
-import Posts from "../../components/commen/Posts";
+import Posts from "../../components/common/posts";
 
 import CreatePost from "./CreatePost";
 
