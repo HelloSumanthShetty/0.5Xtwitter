@@ -28,7 +28,7 @@ const Sidebar = () => {
 
 
 				const data = await res.json()
-				console.log(data)
+				//console.log(data)
 
 
 				queryclient.invalidateQueries({ queryKey: ["authUser"] })

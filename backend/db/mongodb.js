@@ -1,12 +1,12 @@
 const mongoose=require("mongoose")
 const connectdb= async(url)=>{
     try {
-        console.log("connecting")
+        //console.log("connecting")
     const db= await mongoose.connect(url)
     
-     console.log("connected to "+db.connection.host)
+     //console.log("connected to "+db.connection.host)
     } catch (error) {
-        console.log('error message'+error)
+        //console.log('error message'+error)
         process.exit(1)
     }
 }

@@ -27,7 +27,7 @@ const signup = async (req, res) => {
 
         const saltround = 9;
         const hashpass = await bcrypt.hash(password, 9)
-        console.log(hashpass)
+        //console.log(hashpass)
         const creates = await User.create({ email, name, Fullname, password: hashpass })
         const tokens = jwt.sign({ userid: creates._id, username: creates.name, useremail: findemail, userfullname: creates.Fullname }, process.env.SECERT, { expiresIn: "2h" })
         res.cookie("tokens", tokens, {
@@ -141,7 +141,7 @@ const logout = async (req, res) => {
 const getme = async (req, res) => {
     try {
         const userid = req.user?.userid
-        console.log(userid)
+        //console.log(userid)
         if (!userid) throw new Error("token expired")
         const getuser = await User.findById(userid).select("-password")
         if (!getuser) return res.status(404).json("user not found")

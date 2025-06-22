@@ -4,9 +4,9 @@ import ProfilePage from "../../pages/profile/Profilepage";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const Posts = ({ feedType, userid, username,postLength }) => {
-	console.log(feedType)
-	console.log(userid)
-	console.log(username)
+	//console.log(feedType)
+	//console.log(userid)
+	//console.log(username)
 	const queryclient = useQueryClient()
 	const getpost = () => {
 		if (feedType === "forYou") {
@@ -32,14 +32,14 @@ const Posts = ({ feedType, userid, username,postLength }) => {
 			try {
 
 				const res = await fetch(getpost())
-				console.log(res)
+				//console.log(res)
 				const data = await res.json()
 				if (!res.ok) {
 					throw new Error(data.error || "internal server issue")
 				}
-				console.log("Fetched posts:", data);
-				//console.log(data?.length)
-				//console.log(postLength)
+				//console.log("Fetched posts:", data);
+				////console.log(data?.length)
+				////console.log(postLength)
 				postLength?.(data?.length)
 
 				return data

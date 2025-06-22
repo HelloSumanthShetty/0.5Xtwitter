@@ -28,7 +28,7 @@ const ProfilePage = () => {
 	const [profileImg, setProfileImg] = useState(null);
 	const [feedType, setFeedType] = useState("posts");
    const { username } = useParams();
-   console.log(username)
+   //console.log(username)
 	const coverImgRef = useRef(null);
 	const profileImgRef = useRef(null);
 
@@ -49,7 +49,7 @@ const ProfilePage = () => {
 			queryClient.invalidateQueries({queryKey:["Posts"]})
 			
 			])
-			console.log(data)
+			//console.log(data)
 			return data
 
 
@@ -63,13 +63,13 @@ const ProfilePage = () => {
 	
 	const isMyProfile = authuser?._id===user?._id;
 	const isfollowing=authuser.following?.includes(user?._id)
-	//console.log({authuser})
-	console.log("what"+isfollowing)
+	////console.log({authuser})
+	//console.log("what"+isfollowing)
 		const joindate=dayjs(user?.createdAt).format("DD MMMM YYYY")
-	// console.log(authuser?._id)
-	// console.log(user?._id)
-	// console.log(isMyProfile)
-	//console.log(postlen)
+	// //console.log(authuser?._id)
+	// //console.log(user?._id)
+	// //console.log(isMyProfile)
+	////console.log(postlen)
  
 	const { isUpdatingProfile, updateProfile } = useUpdateUserProfile();
 

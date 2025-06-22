@@ -25,7 +25,7 @@ const CreatePost = () => {
 				body:JSON.stringify({text,img})
 			})
 			const data=await res.json()
-         console.log(data)
+         //console.log(data)
 			if(!res.ok){
 				throw new Error(data.error||"internal server error")
 			}
@@ -57,10 +57,10 @@ const CreatePost = () => {
 
 	const handleImgChange = (e) => {
 		const file = e.target.files[0];
-		console.log(file)
+		//console.log(file)
 		 if (file) {
 			const reader = new FileReader();
-		 	console.log(reader)
+		 	//console.log(reader)
 		 	reader.onload = () => {
 				setImg(reader.result);
 				

@@ -24,7 +24,7 @@ const LoginPage = () => {
 					body: JSON.stringify({ email, name, password })
 				});
 				const data = await res.json()
-				console.log(data.success)
+				//console.log(data.success)
 
 				if (!res.ok) {
 					throw new Error(data.error||"internal server error")
@@ -38,7 +38,7 @@ const LoginPage = () => {
 						toast.success("Account logged in successfully")
 						queryclient.invalidateQueries({queryKey:['authUser']})
 					
-					console.log(data)
+					//console.log(data)
 					return data
 				}
 			}

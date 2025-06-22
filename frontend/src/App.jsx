@@ -26,9 +26,9 @@ function App() {
        
        
         const data = await res.json()
-        console.log(data.error)
+        //console.log(data.error)
      if(data.error) return null 
-        console.log(data)
+        //console.log(data)
         return data
  
       } catch (error) {
@@ -54,7 +54,7 @@ function App() {
 
     )
   }
-  console.log("sfs"+authuser)
+  //console.log("sfs"+authuser)
   	
 
 

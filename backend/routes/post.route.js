@@ -9,4 +9,4 @@ router.route("/comment/:id").post(verifytoken,comment)
 router.route("/following").get(verifytoken,getfollowingposts)
 router.route("/like/:id").post(verifytoken,likeunlike).get(verifytoken,getlikes)
 router.route("/user/:username").get(verifytoken,getuserposts)
-module.exports=router    
+module.exports=router      

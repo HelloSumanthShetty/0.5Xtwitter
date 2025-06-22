@@ -15,7 +15,7 @@ const hooks = () => {
                 )
                 const data=await res.json()
                 toast.success("congulations you "+data+" "+user.name)
-                 console.log(data)
+                 //console.log(data)
                  
             if (!res.ok) {
 					throw new Error(data.error||"internal server error")

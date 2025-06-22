@@ -7,7 +7,7 @@ const cloudinary = require("cloudinary").v2
 const createpost = async (req, res) => {
     try {
         let { text, img } = req.body
-        console.log(img)
+        //console.log(img)
         const userid = req.user.userid
         const userfind = await user.findById(userid)
         if (!userfind) {
@@ -18,9 +18,13 @@ const createpost = async (req, res) => {
         }
 
         if (img) {
-            const newimg = await cloudinary.uploader.upload(img)
+            const newimg = await cloudinary.uploader.upload(img,   {transformation: [
+      { width: 800, height: 800, crop: 'limit' },  
+      { quality: 'auto' },                         
+      { fetch_format: 'auto' }                     ],})
             img = newimg.secure_url
         }
+
 
         const createpost = await post.create({
             user: userid, 
@@ -41,7 +45,7 @@ const deletepost = async (req, res) => {
         const userid = req.user.userid
         const findpost = await post.findById(id)
         if (!userid) res.status(404).json("user not found")
-        console.log({ lets: findpost })
+        //console.log({ lets: findpost })
 
         if (!findpost) {
             //return res.status(404).json({error:"sorry the post is not found"})
@@ -104,7 +108,7 @@ const likeunlike = async (req, res) => {
             return res.status(404).json("post info not found")
         }
         const liked = targetpost.like.includes(userid)
-        console.log(liked)
+        //console.log(liked)
        
 
         if (!liked) {
@@ -112,10 +116,10 @@ const likeunlike = async (req, res) => {
             await user.findByIdAndUpdate(userid,{$push:{likedpost:targetpost._id}})
         
             res.json("liked")
-            // console.log(targetpost.user)
-            // console.log(userid)
+            // //console.log(targetpost.user)
+            // //console.log(userid)
             const sameuse=targetpost.user.toString()===userid
-            // console.log(sameuse)
+            // //console.log(sameuse)
             if(!sameuse){
             const notify = new notifies(
                 {
@@ -172,7 +176,7 @@ const getlikes=async(req,res)=>{
     const targetuser=await user.findById(userid)
 
     if(!targetuser) return res.status(404).json({error:"no user exist"})
-        console.log(targetuser.likedpost)
+        //console.log(targetuser.likedpost)
     const likes=await post.find({_id:{$in:targetuser.likedpost}}).sort({createdAt:-1}).populate({
 				path: "user",
 				select: "-password",
@@ -182,7 +186,7 @@ const getlikes=async(req,res)=>{
 				select: "-password",
 			});
 
-    console.log(likes)
+    //console.log(likes)
     res.json(likes)
     } catch (error) {
     console.error(error)
@@ -210,7 +214,7 @@ const getfollowingposts = async (req, res) => {
 
 		res.status(200).json(feedPosts);
 	} catch (error) {
-		console.log("Error in getFollowingPosts controller: ", error);
+		//console.log("Error in getFollowingPosts controller: ", error);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -235,7 +239,7 @@ const getuserposts = async (req, res) => {
 
 		res.status(200).json(posts);
 	} catch (error) {
-		console.log("Error in getUserPosts controller: ", error);
+		//console.log("Error in getUserPosts controller: ", error);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };

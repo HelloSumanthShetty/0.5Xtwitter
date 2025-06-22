@@ -17,7 +17,7 @@ const Post = ({ post,postlen }) => {
 	
 	const [comment, setcomment] = useState("");
 	const { data: authuser } = useQuery({queryKey:["authUser"]})
-	console.log({authuser})
+	//console.log({authuser})
 	const [isLiked, setisLiked] = useState(false)
        useEffect(()=>{
 		if(!authuser?.likedpost||!post?._id){
@@ -69,12 +69,12 @@ const Post = ({ post,postlen }) => {
 				if (data == "liked") {
 					setisLiked(true)
 					QueryClient.invalidateQueries({ queryKey: ['Posts'] })
-					console.log(data)
+					//console.log(data)
 				}
 				else {
 					setisLiked(false)
 					QueryClient.invalidateQueries({ queryKey: ['Posts'] })
-					console.log(data)
+					//console.log(data)
 				}
 			} catch (error) {
 				console.error(error)
@@ -94,9 +94,9 @@ const Post = ({ post,postlen }) => {
 					},
 					body:JSON.stringify({text})
 				})
-				console.log(res)
+				//console.log(res)
 				const data=await res.json()
-				console.log(data)
+				//console.log(data)
 				
 				return data
 			} catch (error) {
@@ -118,7 +118,7 @@ const Post = ({ post,postlen }) => {
 // 	if(authuser._id===post.user.likepost){
 //   setisLiked(true)
 // 	}
- console.log(postlen)
+ //console.log(postlen)
 
 
 

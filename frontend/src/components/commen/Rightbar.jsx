@@ -20,18 +20,18 @@ const RightPanel = () => {
 				const res=await fetch("/api/user/profile/sugguser",
 				{method:"GET"}
 			)
-			console.log(res)
+			//console.log(res)
 			const data=await res.json()
-			console.log(data)
+			//console.log(data)
 		if(!res.ok){
 			throw new Error(data.error||"internal server error")
 		}
-		// console.log(data)
+		// //console.log(data)
 	 
         return data
 
 			} catch (error) {
-				console.log(error||"internal server error")
+				//console.log(error||"internal server error")
 				throw error
 			}
 		}

@@ -36,7 +36,7 @@ const SignupPage = () => {
 					throw new Error(data.error||"internal server issue")
 				}
 				
-				console.log(data.success)
+				//console.log(data.success)
 			
 
 				toast.success("Account creation was successful")
