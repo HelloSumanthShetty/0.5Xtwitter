@@ -1,15 +1,11 @@
 {
-  "name": "0.5xtwitter",
+  "name": "backend",
   "version": "1.0.0",
+  "description": "Backend for 0.5X Twitter",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node backend/server.js"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.6.1",
@@ -22,8 +18,5 @@
     "mongodb": "^6.16.0",
     "mongoose": "^8.14.3",
     "validator": "^13.15.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
   }
 }
