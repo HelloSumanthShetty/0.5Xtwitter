@@ -1,3 +1,4 @@
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 import { useState } from "react";
 import { Link } from "react-router-dom"
@@ -16,7 +17,7 @@ const LoginPage = () => {
 	const { mutate, isError, isPending, error } = useMutation({
 		mutationFn: async ({ email, name, password }) => {
 			try {
-				const res = await fetch('api/login', {
+				const res = await fetch(`${backendUrl}api/login`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json"
