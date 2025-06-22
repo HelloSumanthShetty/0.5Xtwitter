@@ -2,7 +2,7 @@ import { useRef, useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery,useQueryClient } from "@tanstack/react-query";
 import useUpdateUserProfile from "../../components/hooks/useUpdateUserProfil.jsx";
-import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
+import ProfileHeaderSkeleton from "../../components/skeletons/Profileheaderskeleton.jsx";
 import EditProfileModal from "./Editmodel";
 import { POSTS } from "../../utils/db/dummy";
 import hooks from "../../components/hooks/hooks.jsx";
